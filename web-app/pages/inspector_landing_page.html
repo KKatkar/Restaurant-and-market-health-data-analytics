@@ -1,0 +1,485 @@
+<!doctype html>
+<!--[if lt IE 7]>      <html class="no-js lt-ie9 lt-ie8 lt-ie7" lang=""> <![endif]-->
+<!--[if IE 7]>         <html class="no-js lt-ie9 lt-ie8" lang=""> <![endif]-->
+<!--[if IE 8]>         <html class="no-js lt-ie9" lang=""> <![endif]-->
+<!--[if gt IE 8]><!-->
+<html class="no-js" lang="en">
+<!--<![endif]-->
+
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <title>Inspector Dashboard</title>
+    <meta name="description" content="Owner Name">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <!<link rel="apple-touch-icon" href="apple-icon.png">
+    <!<link rel="shortcut icon" href="favicon.ico">
+
+    <link rel="stylesheet" href="vendors/bootstrap/dist/css/bootstrap.min.css">
+
+ 
+    <!<link rel="stylesheet" href="vendors/jqvmap/dist/jqvmap.min.css">
+
+
+    <link rel="stylesheet" href="assets/css/style.css">
+
+    <link href='https://fonts.googleapis.com/css?family=Open+Sans:400,600,700,800' rel='stylesheet' type='text/css'>
+
+</head>
+
+<body>
+
+<script src="jquery.min.js"></script>
+<script type="text/javascript">
+
+
+
+//var emp_id = "EE0000699	";
+
+var userId;
+var emp_id;
+
+userId = window.location.search.split("=");
+emp_id = userId[1];
+
+// code above is for login
+var o_id = "OW0001414";
+$(document).ready(() => {
+	$.ajax({
+		url:'api/total_ins/'+emp_id+'/',
+		type:'GET',
+		dataType:'json',
+		success:(data) => {
+			//Changes here
+			$('#count_total_inspections').html(JSON.stringify(data.count_ins));
+			
+		}
+	});
+});
+
+$(document).ready(() => {
+	$.ajax({
+		url:'api/avg_ins/'+emp_id+'/',
+		type:'GET',
+		dataType:'json',
+		success:(data) => {
+			$('#avg_inspections').html(JSON.stringify(data.avg_score));
+		}
+	});
+});
+
+$(document).ready(() => {
+	$.ajax({
+		url:'api/avg_others_ins/'+emp_id+'/',
+		type:'GET',
+		dataType:'json',
+		success:(data) => {
+			$('#avg_other_inspections').html(JSON.stringify(data.avg_count));
+		}
+	});
+});
+
+$(document).ready(() => {
+	$.ajax({
+		url:'api/avg_others_scr_ins/'+emp_id+'/',
+		type:'GET',
+		dataType:'json',
+		success:(data) => {
+			$('#avg_others_score').html(JSON.stringify(data.avg_score));
+		}
+	});
+});
+
+$(document).ready(() => {
+	$.ajax({
+		url:'api/owner_attr/'+o_id+'/',
+		type:'GET',
+		dataType:'json',
+		success:(data) => {
+			$('#owner_name').html(data.o_name);
+		}
+	});
+});
+
+					$(document).ready(() => {
+	$.ajax({
+		url:'api/owner_facility_list/'+o_id+'/',
+		type:'GET',
+		dataType:'json',
+		success:(data) => {
+		var i;
+		var json_mth;
+		var qtr_array=[];
+$("facility_list").append("<ul></ul>");		
+			 for(i = 0; i < data.length; i++)
+			 {
+			  json_mth = JSON.parse(JSON.stringify(data[i]));
+			 
+			 qtr_array[i] = json_mth.f_name;
+			 var li = "<font color='white'><li class='facility'  ><a class='facility' name ='facility' id='facility' at='hello' href='/facility_analysis_page.html?id="+json_mth.f_id+"'  value='"+json_mth.f_name+"'   >";
+    $("ul").append((li.concat(qtr_array[i])).concat("</a></li></font>"))
+			 
+
+			 
+			 }
+			
+		}
+	});
+});
+
+$(document).ready(() => {
+	$.ajax({
+		url:'api/owner_total_inspections/'+o_id+'/',
+		type:'GET',
+		dataType:'json',
+		success:(data) => {
+			$('#total_inspections').html(data.total_inspections);
+		}
+	});
+});
+
+
+$(document).ready(() => {
+	$.ajax({
+		url:'api/inpected_prop/'+emp_id+'/',
+		type:'GET',
+		dataType:'json',
+		success:(data) => {
+		var i;
+		var json_mth;
+		var qtr_array=[];
+$("facility_list").append("<ul></ul>");		
+			 for(i = 0; i < data.length; i++)
+			 {
+			  json_mth = JSON.parse(JSON.stringify(data[i]));
+			 
+			 qtr_array[i] = json_mth.f_name;
+			 var li = "<font color='white'><li><a href='#'>";
+    $("ul").append(li.concat(qtr_array[i]))
+
+$(document).ready(() => {$('#inspector_name').html(emp_id);
+});		 
+
+			 
+			 }
+			
+		}
+	});
+});
+
+</script>
+
+
+    <!-- Left Panel -->
+
+    <aside id="left-panel" class="left-panel">
+        <nav class="navbar navbar-expand-sm navbar-default">
+
+            <div class="navbar-header">
+                <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#main-menu" aria-controls="main-menu" aria-expanded="false" aria-label="Toggle navigation">
+                    <i class="fa fa-bars"></i>
+                </button>
+				<br><br><br><br><br>
+               <a href="#"><font color="white"><div id="inspector_name">Inspector ID</div></font></a> 
+			   
+            </div>
+
+            <div id="main-menu" class="main-menu collapse navbar-collapse">
+                <ul class="nav navbar-nav">
+                    <li class="active">
+                        <a href="index.html"> <i class="menu-icon fa fa-dashboard"></i><!Dashboard >
+						</a>
+                    </li>
+                    </li>
+                    <h3 class="menu-title">Facilities Reviewed</h3><!-- /.menu-title -->
+                    <li class="menu-item-has-children dropdown">
+					<font color="white">
+					<div id="facility_list">
+					</div></font>
+                        
+                        
+                    </li>
+                </ul>
+            </div><!-- /.navbar-collapse -->
+        </nav>
+    </aside><!-- /#left-panel -->
+
+    <!-- Left Panel -->
+
+    <!-- Right Panel -->
+
+    <div id="right-panel" class="right-panel">
+
+        <!-- Header-->
+        <header id="header" class="header">
+
+            <div class="header-menu">
+
+                <div class="col-sm-7">
+                   
+                    
+                </div>
+
+                <div class="col-sm-5">
+                    <div class="user-area dropdown float-right">
+                        <a href="#" class="dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                            <img class="user-avatar rounded-circle" src="images/admin.png" alt="User Avatar">
+                        </a>
+						
+                        <div class="user-menu dropdown-menu">
+                            
+
+                            <a class="nav-link" href="/index.html"><i class="fa fa-power-off"></i> Logout</a>
+                        </div>
+                    </div>
+
+                   
+
+                </div>
+            </div>
+
+        </header><!-- /header -->
+        <!-- Header-->
+
+        
+
+        <div class="content mt-3">
+
+            
+
+            <div class="col-sm-6 col-lg-3">
+                <div class="card text-white bg-flat-color-1">
+                    <div class="card-body pb-0">
+					 <h4 class="mb-0">
+                        <div id="count_total_inspections">
+                       
+                            <span  class="count"></span>
+                        
+						</div>
+						</h4>
+                        <p class="text-light">Total inspections conducted</p>
+
+                        <div class="chart-wrapper px-0" style="height:80px;" height="80">
+       
+	   <canvas id="insWidgetChart"></canvas>
+                        </div>
+
+                    </div>
+
+                </div>
+            </div>
+            <!--/.col-->
+
+            <div class="col-sm-6 col-lg-3">
+                <div class="card text-white bg-flat-color-2">
+                    <div class="card-body pb-0">
+                        
+                        <h4 class="mb-0">
+						<div id="avg_inspections">
+                            <span class="count"></span>
+							</div>
+                        </h4>
+                        <p class="text-light">Average Score given</p>
+
+                        <div class="chart-wrapper px-0" style="height:80px;" height="80">
+                            <canvas id="insWidgetChart1"></canvas>
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+            <!--/.col-->
+
+            <div class="col-sm-6 col-lg-3">
+                <div class="card text-white bg-flat-color-3">
+                    <div class="card-body pb-0">
+                        
+                        <h4 class="mb-0">
+						<div id="avg_other_inspections">
+                            <span class="count"></span>
+							</div>
+                        </h4>
+                        <p class="text-light">Average Inspection Count (by others)</p>
+
+                    </div>
+
+                    <div class="chart-wrapper px-0" style="height:80px;" height="80">
+                        <canvas id="insWidgetChart2"></canvas>
+                    </div>
+                </div>
+            </div>
+            <!--/.col-->
+
+            <div class="col-sm-6 col-lg-3">
+                <div class="card text-white bg-flat-color-4">
+                    <div class="card-body pb-0">
+                        
+                        <h4 class="mb-0">
+						<div id="avg_others_score">
+                            <span class="count"></span>
+							</div>
+                        </h4>
+                        <p class="text-light">Average Score (by other inspectors)</p>
+
+                        <div class="chart-wrapper px-3" style="height:80px;" height="80">
+                            <canvas id="insWidgetChart3"></canvas>
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+            <!--/.col-->
+
+
+
+            <div class="col-xl-6">
+                <div class="card">
+                    <div class="card-body">
+                        <div class="row">
+                            <div class="col-sm-4">
+                                <h4 class="card-title mb-0">Analysis Chart</h4>
+                                <div class="small text-muted">Metrics Averaged</div>
+                            </div>
+                            <!--/.col-->
+                            <div class="col-sm-8 hidden-sm-down">
+                               
+                                <div class="btn-toolbar float-right" role="toolbar" aria-label="Toolbar with button groups">
+                                    <div class="btn-group mr-3" data-toggle="buttons" aria-label="First group">
+                                        <label class="btn btn-outline-secondary active">
+                                            <input type="radio" name="options" id="option1" value="option1" checked=""> Score
+                                        </label>
+                                        <label class="btn btn-outline-secondary ">
+                                            <input type="radio" name="options" id="option2" value="option2" > Violations
+                                        </label>
+
+                                    </div>
+                                </div>
+                            </div>
+                            <!--/.col-->
+
+
+                        </div>
+                        <!--/.row-->
+                        <div class="chart-wrapper mt-4">
+                            <canvas id="trafficChart1" style="height:200px;" height="200"></canvas>
+                        </div>
+
+                    </div>
+                   
+                </div>
+            </div>
+			
+			<div class="col-lg-6">
+                <div class="card">
+                    <div class="card-body">
+                        <h4 class="mb-3">Inspection Risk Distribution </h4>
+                        <canvas id="barChart"></canvas>
+                    </div>
+                </div>
+            </div><!-- /# column -->
+       
+
+            <div class="col-xl-6 col-lg-6">
+                <div class="card">
+                    <div class="card-body">
+                        <div class="stat-widget-one">
+                            <div class="stat-icon dib"><i class="ti-user text-primary border-primary"></i></div>
+                            <div class="stat-content dib">
+                                <div class="stat-text">Grade Distribution</div>
+                                <div class="chart-wrapper px-3" style="height:140px;" height="80">
+                            <canvas id="gradeWidget"></canvas>
+                        </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+                    <div class="col-lg-6"> <!--for table-->
+                        <div class="card">
+                            <div class="card-header">
+                                <strong class="card-title">Top 10 Facilities - Score Board</strong>
+                            </div>
+                            <div class="card-body">
+                                <table class="table">
+                                    <thead class="thead-dark">
+										<tr>
+                                            <th scope="col">Facility Name</th>
+                                            <th scope="col">Score</th>
+                                        </tr>
+                                        
+                                    </thead>
+                                    
+                                </table>
+
+                            </div>
+                        </div>
+                    </div>	
+					<script src="assets/js/build-table.js"></script> <!-- build table-->					
+            
+
+           
+
+			<div class="col-lg-6">
+                        <div class="card">
+						<div class="card-header">
+                        <h4>Inspected violations count</h4>
+                    </div>
+                            <div class="card-body" style="height: 286px;">
+                                <!<h4 class="mb-3"><!Pie Chart </h4>
+                                <canvas id="pieChart" ></canvas>
+                            </div>
+                        </div>
+                    </div><!-- /# column -->
+
+
+			 
+
+
+        </div> <!-- .content -->
+		 
+    </div><!-- /#right-panel -->
+
+    <!-- Right Panel -->
+
+	<script src="vendors/jquery/dist/jquery.min.js"></script>
+    <script src="vendors/popper.js/dist/umd/popper.min.js"></script>
+    <script src="vendors/bootstrap/dist/js/bootstrap.min.js"></script>
+    <script src="assets/js/main.js"></script>
+
+	
+    <script src="vendors/chart.js/dist/Chart.bundle.min.js"></script>
+	<script src="assets/js/init-scripts/chart-js/chartjs-init1.js"></script>
+    <script src="assets/js/dashboard1.js"></script>  
+	
+	<script src="assets/js/ins_widget_chart.js"></script>
+	<script src="assets/js/ins_widget_chart1.js"></script>
+	<script src="assets/js/ins_widget_chart2.js"></script>
+	<script src="assets/js/ins_widget_chart3.js"></script>
+	<script src="assets/js/ins_grade_widget.js"></script>
+    <script src="vendors/jqvmap/dist/jquery.vmap.min.js"></script>
+    <script src="vendors/jqvmap/examples/js/jquery.vmap.sampledata.js"></script>
+    <script src="vendors/jqvmap/dist/maps/jquery.vmap.world.js"></script>
+    <script>
+        (function($) {
+            "use strict";
+
+            jQuery('#vmap').vectorMap({
+                map: 'world_en',
+                backgroundColor: null,
+                color: '#ffffff',
+                hoverOpacity: 0.7,
+                selectedColor: '#1de9b6',
+                enableZoom: true,
+                showTooltip: true,
+                values: sample_data,
+                scaleColors: ['#1de9b6', '#03a9f5'],
+                normalizeFunction: 'polynomial'
+            });
+        })(jQuery);
+    </script>
+
+</body>
+
+</html>

@@ -1,0 +1,26 @@
+<!doctype html>
+<html>
+<head>
+<title>owners</title>
+</head>
+<body>
+<script src="jquery.min.js"></script>
+<script type="text/javascript">
+
+
+$(document).ready(() => {
+	$.ajax({
+		url:'api/avg_owner_score_graph/',
+		type:'GET',
+		dataType:'json',
+		success:(data) => {
+			var json_mth = JSON.parse(JSON.stringify(data[0]));
+			$('#display').html('Ten random owners: ' +JSON.stringify(json_mth.mth_name));
+		}
+	});
+});
+</script>
+
+<div id="display">test</div>
+</body>
+</html>

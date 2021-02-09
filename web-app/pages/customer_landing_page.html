@@ -1,0 +1,528 @@
+<!doctype html>
+<!--[if lt IE 7]>      <html class="no-js lt-ie9 lt-ie8 lt-ie7" lang=""> <![endif]-->
+<!--[if IE 7]>         <html class="no-js lt-ie9 lt-ie8" lang=""> <![endif]-->
+<!--[if IE 8]>         <html class="no-js lt-ie9" lang=""> <![endif]-->
+<!--[if gt IE 8]><!-->
+<html class="no-js" lang="en">
+<!--<![endif]-->
+
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content=" IE=edge">
+    <title>Customer Dashboard</title>
+    <meta name="description" content="Owner Name">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <!<link rel="apple-touch-icon" href="apple-icon.png">
+    <!<link rel="shortcut icon" href="favicon.ico">
+
+    <link rel="stylesheet" href="vendors/bootstrap/dist/css/bootstrap.min.css">
+
+
+    <!<link rel="stylesheet" href="vendors/jqvmap/dist/jqvmap.min.css">
+
+
+    <link rel="stylesheet" href="assets/css/style.css">
+
+    <link href='https://fonts.googleapis.com/css?family=Open+Sans:400,600,700,800' rel='stylesheet' type='text/css'>
+<script>
+    div.absolute
+    {
+      position:absolute;
+      width: 80%;
+      bottom:20px;
+      border: 3px solid #000000;
+    }
+    </script>
+    <style>
+
+    table, th, td {
+  border: 1px solid white;
+  padding: 5px;
+}
+
+    </style>
+</head>
+
+<body>
+
+<script src="jquery.min.js"></script>
+<script type="text/javascript">
+var o_id = "OW0001414";
+
+function renderMegaTable(event) {
+
+  console.log("CLicked row"+ event.data.tid);
+  index = event.data.tid;
+  //val = JSON.parse(JSON.stringify(ajaxResult[0][index]));
+  val = JSON.parse(JSON.stringify(event.data.obj[0][index]));
+   console.log(val);
+  console.log("Clicked valuename = " + val.NAME);
+  var html_str = "<font color='white'><th>Name</th><th> Address </th><th> Grade </th><th> Score </th></font>";
+  html_str += "<div><tr><td>"+ val.NAME+"</td><td>"+ val.ADDRESS_ID + "</td><td>" + val.GRADE + "</td><td>" + val.SCORE + "</td></tr>";
+  $("#mega_table").html(html_str);
+}
+
+
+function mkt_bind_on_click_functions()
+{
+  for( i = 0; i < MktAjaxResult[0].length;i ++)
+  {
+    $("#mkt-tbl-tr"+i).on("click", {tid:i, obj : MktAjaxResult}, renderMegaTable);
+  }
+}
+var MktAjaxResult=[];
+$(document).ready(() => {
+	$.ajax({
+		url:'api/customer_top_markets',
+		type:'GET',
+		dataType:'json',
+		success:(data) => {
+			//console.log(data);
+			//$('#count_avg_owners').html(JSON.stringify(data));
+      MktAjaxResult.push(data);
+			var html = "";
+			 for(i = 0; i < data.length; i++)
+			 {
+				//json_fid = JSON.parse(JSON.stringify(data[i]));
+				//console.log("Markets");
+				//console.log(JSON.stringify(data[i]));
+			 	json_fid = JSON.parse(JSON.stringify(data[i]));
+				/*console.log("here");
+				console.log(json_fid);
+				console.log("Json Fid = " + json_fid.FACILITY_ID);*/
+				//html += "<div><tr><td>" + json_fid.FACILITY_ID + "</td><td>" + json_fid.NAME + "</td></tr></div>";
+        html += "<div id ='mkt-tbl-tr"+i+"'><tr><td>" + json_fid.NAME + "</td></tr></div>";
+
+
+			 }
+			 $('#top_mkt_list').append(html);
+       mkt_bind_on_click_functions(MktAjaxResult);
+
+		}
+	});
+});
+
+
+function rest_bind_on_click_functions()
+{
+  for( i = 0; i < RestAjaxResult[0].length;i ++)
+  {
+    $("#rest-tbl-tr"+i).on("click", {tid:i, obj : RestAjaxResult}, renderMegaTable);
+  }
+}
+var RestAjaxResult=[];
+$(document).ready(() => {
+	$.ajax({
+		url:'api/customer_top_restaurants',
+		type:'GET',
+		dataType:'json',
+		success:(data) => {
+			//console.log(data);
+			//$('#count_avg_owners').html(JSON.stringify(data));
+      RestAjaxResult.push(data);
+			var html = "";
+			 for(i = 0; i < data.length; i++)
+			 {
+				//json_fid = JSON.parse(JSON.stringify(data[i]));
+				//console.log("Restaurants");
+				//console.log(JSON.stringify(data[i]));
+			 	json_fid = JSON.parse(JSON.stringify(data[i]));
+				/*console.log("here");
+				console.log(json_fid);
+				console.log("Json Fid = " + json_fid.FACILITY_ID);*/
+				html += "<div id ='rest-tbl-tr"+i+"'><tr><td>" + json_fid.NAME + "</td></tr></div>";
+
+			 }
+			 $('#top_rest_list').append(html);
+       console.log("Ajax result");
+       console.log(RestAjaxResult);
+      rest_bind_on_click_functions();
+		}
+	});
+});
+
+
+// used by Top Neighbourhoods
+function renderNBMegaTable(event)
+{
+  console.log("NB CLicked row"+ event.data.tid);
+  index = event.data.tid;
+  //val = JSON.parse(JSON.stringify(ajaxResult[0][index]));
+  val = JSON.parse(JSON.stringify(event.data.obj[0][index]));
+   console.log(val);
+  console.log("Clicked valuename = " + val.NAME);
+  var html_str = "<font color='white'><th>Name</th><th> Address </th><th> Grade </th><th> Score </th></font>";
+  html_str += "<div><tr><td> "+ val.STREET+"</td><td>"+ val.CITY + "</td><td>" + val.ZIP + "</td><td>" + val.ADDRESS_ID + "</td></tr>";
+  $("#mega_table").html(html_str);
+
+}
+
+var NBTableResult = [];
+function fireNBDetailsAjax(event)
+{
+  console.log("NB CLicked row"+ event.data.tid);
+  console.log(event.data.obj);
+  index = event.data.tid;
+  val = JSON.parse(JSON.stringify(event.data.obj[0][index]));
+  nb_id = val.ADDRESS_ID;
+  console.log("NB id selected = " + nb_id);
+
+
+
+  // new
+  $.ajax({
+    url:'api/customer_nb_details/'+nb_id+'/',
+    type:'GET',
+    dataType:'json',
+    success:(data) => {
+      console.log("NB acc to id result");
+      console.log(data);
+      //$('#count_avg_owners').html(JSON.stringify(data));
+      //NBTableResult.push(data);
+      var html = "<font color='white'><th>Name</th></font>";
+       for(i = 0; i < data.length; i++)
+       {
+        //json_fid = JSON.parse(JSON.stringify(data[i]));
+        //console.log("Restaurants");
+        //console.log(JSON.stringify(data[i]));
+        json_fid = JSON.parse(JSON.stringify(data[i]));
+        console.log("Inside NB ajax");
+        console.log(json_fid);
+        console.log("Json Fname= " + json_fid.F_NAME);
+        html += "<tr><td>" + json_fid.F_NAME + "</td></tr>";
+
+      }
+       $('#mega_table').html(html);
+
+    }
+  });
+
+}
+
+
+
+function nb_bind_on_click_functions()
+{
+  for( i = 0; i < NBAjaxResult[0].length;i ++)
+  {
+    $("#nb-tbl-tr"+ i).on("click", {tid:i, obj : NBAjaxResult}, fireNBDetailsAjax);
+  }
+}
+
+var NBAjaxResult=[];
+$(document).ready(() => {
+	$.ajax({
+		url:'api/customer_top_neighbourhoods',
+		type:'GET',
+		dataType:'json',
+		success:(data) => {
+			console.log("NB data");
+			console.log(data);
+			//$('#count_avg_owners').html(JSON.stringify(data));
+      NBAjaxResult.push(data);
+			var html = "";
+			 for(i = 0; i < data.length; i++)
+			 {
+				//json_fid = JSON.parse(JSON.stringify(data[i]));
+				//onsole.log("Neighbourhoods");
+				//console.log(JSON.stringify(data[i]));
+			 	json_fid = JSON.parse(JSON.stringify(data[i]));
+				console.log("here");
+				console.log(json_fid);
+				console.log("Json Address id = " + json_fid.ADDRESS_ID);
+				//html += "<div id ='nb-tbl-tr"+i+"'><tr><td>" + json_fid.STREET + "</td><td>" + json_fid.ZIP + "</td></tr></div>";
+        html += "<div id ='nb-tbl-tr"+i+"'><tr><td> " + json_fid.STREET + "</td></tr></div>";
+
+
+			 }
+			 $('#top_nb_list').append(html);
+       nb_bind_on_click_functions();
+
+		}
+	});
+});
+
+
+
+
+
+
+$(document).ready(() => {
+	document.getElementById("#mega_table_div").style.width = "auto";
+});
+/*
+$(document).ready(() => {
+	$.ajax({
+		url:'api/owner_critical_violation/'+o_id+'/',
+		type:'GET',
+		dataType:'json',
+		success:(data) => {
+			$('#count_owner_crt_violations').html(JSON.stringify(data.crt_cnt));
+		}
+	});
+});
+
+$(document).ready(() => {
+	$.ajax({
+		url:'api/owner_attr/'+o_id+'/',
+		type:'GET',
+		dataType:'json',
+		success:(data) => {
+			$('#owner_name').html(data.o_name);
+		}
+	});
+});
+
+					$(document).ready(() => {
+	$.ajax({
+		url:'api/owner_facility_list/'+o_id+'/',
+		type:'GET',
+		dataType:'json',
+		success:(data) => {
+		var i;
+		var json_mth;
+		var qtr_array=[];
+$("facility_list").append("<ul></ul>");
+			 for(i = 0; i < data.length; i++)
+			 {
+			  json_mth = JSON.parse(JSON.stringify(data[i]));
+
+			 qtr_array[i] = json_mth.f_name;
+			 var li = "<font color='white'><li><a href='#'>";
+    $("ul").append(li.concat(qtr_array[i]))
+
+
+
+			 }
+
+		}
+	});
+});
+
+$(document).ready(() => {
+	$.ajax({
+		url:'api/owner_total_inspections/'+o_id+'/',
+		type:'GET',
+		dataType:'json',
+		success:(data) => {
+			$('#total_inspections').html(data.total_inspections);
+		}
+	});
+});*/
+</script>
+
+
+    <!-- Left Panel -->
+
+    <aside id="left-panel" class="left-panel">
+        <nav class="navbar navbar-expand-sm navbar-default">
+
+            <div class="navbar-header">
+                <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#main-menu" aria-controls="main-menu" aria-expanded="false" aria-label="Toggle navigation">
+                    <i class="fa fa-bars"></i>
+                </button>
+				<br><br><br><br><br>
+               <a href="#"><font color="white"><div id="owner_name"> Hello Customer </div></font></a>
+
+            </div>
+
+            <div id="main-menu" class="main-menu collapse navbar-collapse">
+                <ul class="nav navbar-nav">
+                    <li class="active">
+                        <a href="index.html"> <i class="menu-icon fa fa-dashboard"></i><!Dashboard >
+						</a>
+                    </li>
+
+
+					<!--
+                    </li>
+                    <!-- <h3 class="menu-title">Facilities</h3><!-- /.menu-title -->
+                    <!-- <li class="menu-item-has-children dropdown">
+					<font color="white">
+					<div id="facility_list">
+					</div></font>
+
+
+                    </li>
+                    </li>-->
+                </ul>
+            </div><!-- /.navbar-collapse -->
+        </nav>
+    </aside><!-- /#left-panel -->
+
+    <!-- Left Panel -->
+
+    <!-- Right Panel -->
+
+    <div id="right-panel" class="right-panel">
+
+        <!-- Header-->
+        <header id="header" class="header">
+
+            <div class="header-menu">
+
+                <div class="col-sm-7">
+
+
+                </div>
+
+                <div class="col-sm-5">
+                    <div class="user-area dropdown float-right">
+                        <a href="#" class="dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                            <img class="user-avatar rounded-circle" src="images/admin.png" alt="User Avatar">
+                        </a>
+
+                        <div class="user-menu dropdown-menu">
+                      
+
+                            <a class="nav-link" href="/index.html"><i class="fa fa-power-off"></i> Logout</a>
+                        </div>
+                    </div>
+
+
+
+                </div>
+            </div>
+
+        </header><!-- /header -->
+        <!-- Header-->
+
+
+
+        <div class="content mt-3">
+             <div class="col-sm-6 col-lg-3" style="width: auto;max-width: 500px">
+                <div class="card text-white bg-flat-color-1">
+                    <div class="card-body pb-0">
+					 <class="mb-0">
+						<h4>Top 3 Food Markets</h4>
+						<table id="top_mkt_list" style="border-spacing: 55px; margin-left:auto;margin-right:auto;">
+							<font color="white">
+
+							<th> NAME </th>
+							</font>
+                        </table>
+
+                    </div>
+                </div>
+            </div>
+            <!--/.col-->
+
+            <div class="col-sm-6 col-lg-3" style="width: auto;max-width: 500px">
+                <div class="card text-white bg-flat-color-4">
+                    <div class="card-body pb-0">
+
+                        <h4 class="mb-0">
+						<h4>Top 3 Restaurants</h4>
+						<table id="top_rest_list" style="border-spacing: 55px; margin-left:auto;margin-right:auto;">
+							<font color="white">
+
+							<th> NAME </th>
+							</font>
+                        </table>
+					</h4>
+
+                    </div>
+                </div>
+            </div>
+            <!--/.col-->
+
+
+            <div class="col-sm-6 col-lg-3" style="width: auto;max-width: 500px">
+                <div class="card text-white bg-flat-color-1" >
+                    <div class="card-body pb-0">
+					 <h4 class="mb-0">
+						<h4>Top 3 Neighbourhoods</h4>
+							<table id="top_nb_list" style="border-spacing: 55px; margin-left:auto;margin-right:auto;">
+								<font color="white">
+									<th>STREET</th>
+								</font>
+							</table>
+					</h4>
+
+                    </div>
+                </div>
+            </div>
+            <div>
+
+
+
+
+        </div> <!-- .content -->
+
+    </div><!-- /#right-panel -->
+
+    <!-- Right Panel -->
+    <!--
+<div id = "mega_table_div">
+  <div class="col-sm-6 col-lg-3" style="width: auto;max-width: 500px;margin-left:250px;margin-right:auto">
+      <div class="card text-white bg-flat-color-5">
+          <div class="card-body pb-0">
+      <h4 class="mb-0">
+      <h4>Result table</h4>
+        <table id="mega_table" style="border-spacing: 55px; margin-left:auto;margin-right:auto;" >
+
+        </table>
+    </h4>
+</div>
+</div>
+</div>
+</div>
+-->
+
+<div class="col-lg-6" style="width: 80%;max-width:none"> <!--for table-->
+                        <div class="card">
+                            <div class="card-header">
+                                <strong class="card-title">Result</strong>
+                            </div>
+                            <div class="card-body">
+                                <table id = "mega_table"  class="table">
+                                    <thead class="thead-dark">
+
+                                    </thead>
+
+                                </table>
+
+                            </div>
+                        </div>
+                    </div>
+
+	<script src="vendors/jquery/dist/jquery.min.js"></script>
+    <script src="vendors/popper.js/dist/umd/popper.min.js"></script>
+    <script src="vendors/bootstrap/dist/js/bootstrap.min.js"></script>
+    <script src="assets/js/main.js"></script>
+
+
+    <script src="vendors/chart.js/dist/Chart.bundle.min.js"></script>
+	<script src="assets/js/init-scripts/chart-js/chartjs-init.js"></script>
+    <script src="assets/js/dashboard.js"></script>
+	<script src="assets/js/owner_widget_chart1.js"></script>
+	<script src="assets/js/owner_widget_chart2.js"></script>
+	<script src="assets/js/owner_widget_chart3.js"></script>
+	<script src="assets/js/owner_widget_chart4.js"></script>
+    <!<script src="assets/js/widgets.js"><!</script>
+    <script src="vendors/jqvmap/dist/jquery.vmap.min.js"></script>
+    <script src="vendors/jqvmap/examples/js/jquery.vmap.sampledata.js"></script>
+    <script src="vendors/jqvmap/dist/maps/jquery.vmap.world.js"></script>
+    <script>
+        (function($) {
+            "use strict";
+
+            jQuery('#vmap').vectorMap({
+                map: 'world_en',
+                backgroundColor: null,
+                color: '#ffffff',
+                hoverOpacity: 0.7,
+                selectedColor: '#1de9b6',
+                enableZoom: true,
+                showTooltip: true,
+                values: sample_data,
+                scaleColors: ['#1de9b6', '#03a9f5'],
+                normalizeFunction: 'polynomial'
+            });
+        })(jQuery);
+    </script>
+
+</body>
+
+</html>
